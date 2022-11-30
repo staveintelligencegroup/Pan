@@ -42,23 +42,41 @@ fig.add_trace(go.Choroplethmapbox(geojson=json.loads(provinces.to_json()),
 fig.add_trace(go.Choroplethmapbox(geojson=json.loads(geodf.to_json()),
                                     locations=geodf.index, z=geodf['threat'],
                                     colorscale="Inferno", marker_line_width=.5))
-fig.add_trace(go.Choroplethmapbox(geojson=json.loads(counties.to_json()),
-                                    locations=counties.index, z=counties['threat'],
-                                    colorscale="Inferno", marker_line_width=.5))
+
+
+
 
 for locale in tqdm(daily_locales):
     #preds = get_preds(locale)
     #all = preds[0]
     loc = get_coords(locale)
     #pp = provinces[provinces.latitude < loc[1]+0.1 and provinces.latitude > loc[1]-0.1 ]# provinces.longitude < loc[3]+0.1 and provinces.longitude > loc[3]-0.1]
+    x = provinces[provinces.latitude < loc[0]+3.1]
+    xx = x[x.latitude > loc[0]-3.1]
+    xxx = xx[xx.longitude < loc[1]+3.1]
+    xxxx = xxx[xxx.longitude > loc[1]-3.1]
+    if len(xxxx)>0:
+        xxxx['threat'] = list(np.random.randint(50, 70,len(xxxx)-1))+[100]
+    else:
+        xxxx['threat'] = np.random.randint(40, 60, len(xxxx))
+    #xxxx['threat'] = list(np.random.randint(40, 60,len(xxxx)-1))+[100]
+    fig.add_trace(go.Choroplethmapbox(geojson=json.loads(xxxx.to_json()),
+                                        locations=xxxx.index, z=xxxx['threat'],
+                                        colorscale="Inferno", marker_line_width=.5))
+
+
     x = provinces[provinces.latitude < loc[0]+1.1]
     xx = x[x.latitude > loc[0]-1.1]
     xxx = xx[xx.longitude < loc[1]+1.1]
     xxxx = xxx[xxx.longitude > loc[1]-1.1]
-    xxxx['threat'] = np.random.randint(80, 100,len(xxxx))
+    if len(xxxx)>0:
+        xxxx['threat'] = list(np.random.randint(80, 100,len(xxxx)-1))+[11]
+    else:
+        xxxx['threat'] = np.random.randint(80, 100, len(xxxx))
     fig.add_trace(go.Choroplethmapbox(geojson=json.loads(xxxx.to_json()),
                                         locations=xxxx.index, z=xxxx['threat'],
                                         colorscale="Inferno", marker_line_width=.5))
+
     #x = geodf[geodf.latitude < loc[0]+1.1]
     #xx = x[x.latitude > loc[0]-1.1]
     #xxx = xx[xx.longitude < loc[1]+1.1]
@@ -67,6 +85,28 @@ for locale in tqdm(daily_locales):
     #fig.add_trace(go.Choroplethmapbox(geojson=json.loads(xxxx.to_json()),
     #                                    locations=xxxx.index, z=xxxx['threat'],
     #                                    colorscale="Inferno", marker_line_width=.5))
+fig.add_trace(go.Choroplethmapbox(geojson=json.loads(counties.to_json()),
+                                    locations=counties.index, z=counties['threat'],
+                                    colorscale="Inferno", marker_line_width=.5))
+for locale in tqdm(daily_locales):
+    loc = get_coords(locale)
+    x = counties[counties.latitude < loc[0]+1.1]
+    xx = x[x.latitude > loc[0]-1.1]
+    xxx = xx[xx.longitude < loc[1]+1.1]
+    xxxx = xxx[xxx.longitude > loc[1]-1.1]
+    if len(xxxx)>0:
+        xxxx['threat'] = list(np.random.randint(50, 70,len(xxxx)-1))+[100]
+    else:
+        xxxx['threat'] = np.random.randint(40, 60, len(xxxx))
+    #xxxx['threat'] = list(np.random.randint(40, 60,len(xxxx)-1))+[100]
+    fig.add_trace(go.Choroplethmapbox(geojson=json.loads(xxxx.to_json()),
+                                        locations=xxxx.index, z=xxxx['threat'],
+                                        colorscale="Inferno", marker_line_width=.5))
+
+
+
+
+
 
 fig.update_layout(mapbox_style="carto-darkmatter",
                         height = 1000,
